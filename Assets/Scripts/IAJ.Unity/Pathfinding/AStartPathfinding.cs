@@ -76,8 +76,25 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
         protected virtual void ProcessChildNode(NodeRecord bestNode, NavigationGraphEdge connectionEdge)
         {
             //this is where you process a child node 
-            var childNode = GenerateChildNodeRecord(bestNode, connectionEdge);
-            //TODO put the code from the previous LAB here
+            NodeRecord childNode = GenerateChildNodeRecord(bestNode, connectionEdge);
+            NodeRecord openNode = Open.SearchInOpen(childNode);
+            NodeRecord closedNode = Closed.SearchInClosed(childNode);
+            bool inOpen = openNode != null ? true : false;
+            bool inClosed = closedNode != null ? true : false;
+            if (!inOpen && !inClosed)
+            {
+                Open.AddToOpen(childNode);
+            }
+            else if (inOpen && childNode.fValue < openNode.fValue)
+            {
+                Open.RemoveFromOpen(openNode);
+                Open.AddToOpen(childNode);
+            }
+            else if (inClosed && childNode.fValue < closedNode.fValue)
+            {
+                Closed.RemoveFromClosed(closedNode);
+                Open.AddToOpen(childNode);
+            }
         }
 
         //this method should return true if the Search process finished (i.e either because it found a solution or because there was no solution
@@ -86,12 +103,45 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
         //if the parameter returnPartialSolution is true, then the user wants to have a partial path to the best node so far even when the search has not finished searching
         public virtual bool Search(out Path solution, bool returnPartialSolution = false)
         {
-            //TODO put the code from the previous LAB here
-            //you will get compiler errors, because I change the method names in the IOpenSet and IClosedSet interfaces
-            //sorry but I had to do it because if not, Unity profiler would consider the Search method in Open and Closed to be the same
-            //and you would not be able to see the difference in performance searching the Open Set and in searching the closed set
-            
-            //so just replace this.Open.Search(...) by this.Open.SearchInOpen(...) and all other methods where you get the compilation errors
+            int counter = 0;
+            float startTime = Time.realtimeSinceStartup;
+            while (true)
+            {
+                if (Open.CountOpen() == 0)
+                {
+                    solution = null;
+                    TotalProcessingTime += Time.realtimeSinceStartup - startTime;
+                    CleanUp();
+                    return true;
+                }
+                NodeRecord bestNode = Open.GetBestAndRemove();
+                if (bestNode.node.Equals(GoalNode))
+                {
+                    solution = CalculateSolution(bestNode, false);
+                    this.InProgress = false;
+                    TotalProcessingTime += Time.realtimeSinceStartup - startTime;
+                    CleanUp();
+                    return true;
+                }
+                Closed.AddToClosed(bestNode);
+
+                //to determine the connections of the selected nodeRecord you need to look at the NavigationGraphNode' EdgeOut  list
+                //something like this
+                var outConnections = bestNode.node.OutEdgeCount;
+                for (int i = 0; i < outConnections; i++)
+                {
+                    this.ProcessChildNode(bestNode, bestNode.node.EdgeOut(i));
+                }
+                if (counter >= NodesPerSearch)
+                {
+                    TotalProcessingTime += Time.realtimeSinceStartup - startTime;
+                    solution = CalculateSolution(bestNode, true);
+                    return false;
+                }
+                counter += 1;
+                TotalProcessedNodes += 1;
+                if (MaxOpenNodes <= Open.CountOpen()) MaxOpenNodes = Open.CountOpen();
+            }
         }
 
         protected NavigationGraphNode Quantize(Vector3 position)
