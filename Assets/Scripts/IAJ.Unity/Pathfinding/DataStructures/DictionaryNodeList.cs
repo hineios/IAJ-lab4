@@ -6,11 +6,11 @@ using System.Text;
 
 namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 {
-    class HashTableNodeList : IClosedSet
+    class DictionaryNodeList : IClosedSet
     {
         private Dictionary<int, NodeRecord> NodeRecords { get; set; }
 
-        public HashTableNodeList()
+        public DictionaryNodeList()
         {
             NodeRecords = new Dictionary<int, NodeRecord>();
         }

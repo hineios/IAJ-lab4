@@ -32,8 +32,8 @@ public class PathfindingManager : MonoBehaviour {
 		this.navMesh = NavigationManager.Instance.NavMeshGraphs [0];
 
         //this.aStarPathFinding = new NodeArrayAStarPathFinding(this.navMesh,new EuclideanDistanceHeuristic());
-	    this.aStarPathFinding = new AStarPathfinding(this.navMesh, new SimpleUnorderedNodeList(), new SimpleUnorderedNodeList(), new ZeroHeuristic());
-	    this.aStarPathFinding.NodesPerSearch = 100;
+	    this.aStarPathFinding = new AStarPathfinding(this.navMesh, new SimpleUnorderedNodeList(), new SimpleUnorderedNodeList(), new EuclideanHeuristic());
+	    this.aStarPathFinding.NodesPerSearch = 50;
 	}
 	
 	// Update is called once per frame
@@ -41,7 +41,7 @@ public class PathfindingManager : MonoBehaviour {
     {
 		Vector3 position;
 		NavigationGraphNode node;
-
+        
 		if (Input.GetMouseButtonDown(0)) 
 		{
 			//if there is a valid position
