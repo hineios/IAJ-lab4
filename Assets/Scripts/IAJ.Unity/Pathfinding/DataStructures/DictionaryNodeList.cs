@@ -31,17 +31,16 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 
         public void RemoveFromClosed(NodeRecord nodeRecord)
         {
-            throw new NotImplementedException();
+            NodeRecords.Remove(nodeRecord.GetHashCode());
         }
 
         public NodeRecord SearchInClosed(NodeRecord nodeRecord)
         {
-
             NodeRecords.TryGetValue(nodeRecord.GetHashCode(), out nodeRecord);
             return nodeRecord;
         }
 
-        public int Count()
+        public int CountOpen()
         {
             return NodeRecords.Count;
         }

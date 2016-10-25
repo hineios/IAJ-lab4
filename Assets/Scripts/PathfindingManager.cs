@@ -32,7 +32,7 @@ public class PathfindingManager : MonoBehaviour {
 		this.navMesh = NavigationManager.Instance.NavMeshGraphs [0];
 
         //this.aStarPathFinding = new NodeArrayAStarPathFinding(this.navMesh,new EuclideanDistanceHeuristic());
-	    this.aStarPathFinding = new AStarPathfinding(this.navMesh, new SimpleUnorderedNodeList(), new SimpleUnorderedNodeList(), new EuclideanHeuristic());
+	    this.aStarPathFinding = new AStarPathfinding(this.navMesh, new NodePriorityHeap(), new DictionaryNodeList(), new EuclideanHeuristic());
 	    this.aStarPathFinding.NodesPerSearch = 50;
 	}
 	
