@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 {
@@ -9,32 +10,31 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 
         public LeftPriorityList()
         {
-            this.Open = new List<NodeRecord>();    
+            this.Open = new List<NodeRecord>();
+            //this.Open.Sort((n1, n2) => n1.fValue < n2.fValue? -1 : 1);
         }
         public void Initialize()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            this.Open.Clear();
         }
 
         public void Replace(NodeRecord nodeToBeReplaced, NodeRecord nodeToReplace)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            this.Open.Remove(nodeToBeReplaced);
         }
 
         public NodeRecord GetBestAndRemove()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            var best = this.PeekBest();
+            this.Open.Remove(best);
+            return best;
         }
 
         public NodeRecord PeekBest()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return Open[0]; 
         }
-
+         
         public void AddToOpen(NodeRecord nodeRecord)
         {
             //a little help here
@@ -42,32 +42,29 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
             int index = this.Open.BinarySearch(nodeRecord);
             if (index < 0)
             {
+                //Debug.Log("add to open: " + (~index >= this.Open.Count ? 0 : this.Open[~index].fValue) + " -> " + nodeRecord.fValue);
                 this.Open.Insert(~index, nodeRecord);
             }
         }
 
         public void RemoveFromOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            this.Open.Remove(nodeRecord);
         }
 
         public NodeRecord SearchInOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return this.Open.Find(n => n.Equals(nodeRecord));
         }
 
         public ICollection<NodeRecord> All()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return this.Open;
         }
 
         public int CountOpen()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return Open.Count;
         }
     }
 }
