@@ -67,80 +67,79 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding.DataStructures
 
         void IClosedSet.Initialize()
         {
-            //TODO implement
-            throw new NotImplementedException();
         }
 
         public void AddToOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            nodeRecord.status = NodeStatus.Open;
+            this.Open.AddToOpen(nodeRecord);
+            NodeRecords[nodeRecord.node.NodeIndex] = nodeRecord;
         }
 
         public void AddToClosed(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            nodeRecord.status = NodeStatus.Closed;
+            NodeRecords[nodeRecord.node.NodeIndex] = nodeRecord;
         }
 
         public NodeRecord SearchInOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return NodeRecords[nodeRecord.node.NodeIndex].status == NodeStatus.Open ? NodeRecords[nodeRecord.node.NodeIndex] : null;
         }
 
         public NodeRecord SearchInClosed(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return NodeRecords[nodeRecord.node.NodeIndex].status == NodeStatus.Closed ? NodeRecords[nodeRecord.node.NodeIndex] : null;
         }
 
         public NodeRecord GetBestAndRemove()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            var best = PeekBest();
+            best.status = NodeStatus.Closed;
+            return this.Open.GetBestAndRemove();
         }
 
         public NodeRecord PeekBest()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return this.Open.PeekBest();
         }
 
         public void Replace(NodeRecord nodeToBeReplaced, NodeRecord nodeToReplace)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            NodeRecords[nodeToBeReplaced.node.NodeIndex] = nodeToReplace;
+            this.Open.Replace(nodeToBeReplaced, nodeToReplace);
         }
 
         public void RemoveFromOpen(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            this.Open.RemoveFromOpen(nodeRecord);
+            nodeRecord.status = NodeStatus.Closed;
         }
 
         public void RemoveFromClosed(NodeRecord nodeRecord)
         {
-            //TODO implement
-            throw new NotImplementedException();
+            nodeRecord.status = NodeStatus.Open;
         }
 
         ICollection<NodeRecord> IOpenSet.All()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return Open.All();
         }
 
         ICollection<NodeRecord> IClosedSet.All()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            List<NodeRecord> closed = new List<NodeRecord>();
+            for(int i = 0; i < NodeRecords.Length; i++)
+            {
+                if (NodeRecords[i].status == NodeStatus.Closed)
+                    closed.Add(NodeRecords[i]);
+            }
+            return closed;
         }
 
         public int CountOpen()
         {
-            //TODO implement
-            throw new NotImplementedException();
+            return Open.CountOpen();
         }
     }
 }
