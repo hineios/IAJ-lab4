@@ -9,6 +9,7 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
     public class NodeArrayAStarPathFinding : AStarPathfinding
     {
         protected NodeRecordArray NodeRecordArray { get; set; }
+
         public NodeArrayAStarPathFinding(NavMeshPathGraph graph, IHeuristic heuristic) : base(graph,null,null,heuristic)
         {
             //do not change this
@@ -42,7 +43,36 @@ namespace Assets.Scripts.IAJ.Unity.Pathfinding
                 this.NodeRecordArray.AddSpecialCaseNode(childNodeRecord);
             }
 
-            //TODO implement the rest of your code here
+
+            g = bestNode.gValue + connectionEdge.Cost;
+            h = this.Heuristic.H(childNode, this.GoalNode);
+            f = F(g, h);
+
+
+            if (childNodeRecord.status == NodeStatus.Unvisited)
+            {
+                childNodeRecord.fValue = f;
+                childNodeRecord.gValue = g;
+                childNodeRecord.hValue = h;
+                childNodeRecord.parent = bestNode;
+                NodeRecordArray.AddToOpen(childNodeRecord);
+            }
+            else if (childNodeRecord.status == NodeStatus.Open && f < childNodeRecord.fValue)
+            {
+                childNodeRecord.fValue = f;
+                childNodeRecord.gValue = g;
+                childNodeRecord.hValue = h;
+                childNodeRecord.parent = bestNode;
+                NodeRecordArray.Replace(childNodeRecord, childNodeRecord);
+            }
+            else if (childNodeRecord.status == NodeStatus.Closed && f < childNodeRecord.fValue)
+            {
+                childNodeRecord.fValue = f;
+                childNodeRecord.gValue = g;
+                childNodeRecord.hValue = h;
+                childNodeRecord.parent = bestNode;
+                NodeRecordArray.Replace(childNodeRecord, childNodeRecord);
+            }
         }
             
         private List<NavigationGraphNode> GetNodesHack(NavMeshPathGraph graph)
